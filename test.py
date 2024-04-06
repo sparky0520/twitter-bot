@@ -43,7 +43,7 @@ def process_tweet(tweet):
             api.update_status(status=message[:280])  # Adjust for character limit
 
 # Stream listener class
-class MyStreamListener(tweepy.MyStreamListener):
+class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
         process_tweet(status)
