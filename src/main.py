@@ -14,7 +14,46 @@ auth = tweepy.OAuth1UserHandler(api_key, api_secret, access_token, access_token_
 api = tweepy.API(auth)
 
 # Keywords for incident detection
-incident_keywords = {
+incident_keywords =[
+    
+        'fire breaks out',
+        'fire tender',
+        'control fire',
+        'gutted in fire',
+        'fire broke out',
+        'fire call',
+        'fire incident',
+        'engulfed in a fire',
+        'engulfed in fire',
+        'forest fire'
+    ,
+    
+        'water leakage',
+        'water pipeline leakage',
+        'water pipe leakage',
+        'leakage in water pipe'
+    ,
+    
+        'road damaged',
+        'roads damaged',
+        'damaged road',
+        'damaged roads',
+        'pothole'
+    ,
+    
+        'building collapse'
+    ,
+    
+        'trash is piling up',
+        'trash piling up',
+        'garbage is piling up',
+        'garbage piling up',
+        'waste is piling up',
+        'waste piling up'
+    
+]
+
+incident_keywords_map = {
     "fire": [
         "fire breaks out",
         "fire tender",
