@@ -1,13 +1,13 @@
-import tweepy
+import tweepy # Downgraded to v3.10.0
 
-api_key = "mwVc9zQGm4RVYXe2aqHVZ6iyT"
-api_secret = "gpDGqMZvPfO9u6qnlqgTDtHXVXv6qntvGNdSsS8ZqQmNEjm7gZ"
-bearer_token = r"AAAAAAAAAAAAAAAAAAAAAJO%2BtAEAAAAAZHPQ4Bv4uvmzG9sdkwMBWonjNDE%3D1bjeswKCRIC5QfiZqZKyYLookWRDpxtlKZfNXFQlB4BDG1ZVpp"
+consumer_key = "mwVc9zQGm4RVYXe2aqHVZ6iyT"
+consumer_secret = "gpDGqMZvPfO9u6qnlqgTDtHXVXv6qntvGNdSsS8ZqQmNEjm7gZ"
 access_token = "1324319741998104576-07IGlcSaDaWMIfqRhrSQzJMkU9ci9G"
 access_token_secret = "k6B5zc1MHAg60rHQbhx4yqF30IA0j5cGUOuMmDSkaIDN1"
 
 # Connect Bot to Twitter API - With this tweepy is now fully set up
-auth = tweepy.OAuth1UserHandler(api_key, api_secret, access_token, access_token_secret)
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
 # Keywords for incident detection
