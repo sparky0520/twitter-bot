@@ -7,46 +7,10 @@ access_token = "1324319741998104576-07IGlcSaDaWMIfqRhrSQzJMkU9ci9G"
 access_token_secret = "k6B5zc1MHAg60rHQbhx4yqF30IA0j5cGUOuMmDSkaIDN1"
 
 # Connect Bot to Twitter API - With this tweepy is now fully set up
-client = tweepy.Client(bearer_token, api_key, api_secret, access_token, access_token_secret)
-
-# Not essential, but used to access some old tweepy features
 auth = tweepy.OAuth1UserHandler(api_key, api_secret, access_token, access_token_secret)
 api = tweepy.API(auth)
 
 # Keywords for incident detection
-incident_keywords =[
-        'fire breaks out',
-        'fire tender',
-        'control fire',
-        'gutted in fire',
-        'fire broke out',
-        'fire call',
-        'fire incident',
-        'engulfed in a fire',
-        'engulfed in fire',
-        'forest fire',
-
-        'water leakage',
-        'water pipeline leakage',
-        'water pipe leakage',
-        'leakage in water pipe',
-
-        'road damaged',
-        'roads damaged',
-        'damaged road',
-        'damaged roads',
-        'pothole',
-
-        'building collapse',
-
-        'trash is piling up',
-        'trash piling up',
-        'garbage is piling up',
-        'garbage piling up',
-        'waste is piling up',
-        'waste piling up'
-]
-
 incident_keywords_map = {
     "fire": [
         "fire breaks out",
@@ -213,14 +177,6 @@ agency_map = {
     "tree collapse": "@MCD_Delhi"
 }
 
-#Find key from dictionary from value inside it
-def find_keys(dictionary, target_value):
-    keys = []
-    for key, value_list in dictionary.items():
-        if target_value in value_list:
-            keys.append(key)
-    return keys
-
 # Function to process tweets from stream
 def process_tweet(tweet):
     # Extract location and incident type from tweet (replace with your NER implementation)
@@ -229,33 +185,42 @@ def process_tweet(tweet):
         if keyword in tweet.text.lower():
             location = keyword
             break
-    incident_type = ""
+    incident_types = []
     for keyword in incident_keywords:
         if keyword in tweet.text.lower():
             keys = find_keys(incident_keywords_map, keyword)
-            incident_type = keys
+            incident_types.extend(keys)
             break
 
-    # Check if location and incident type are valid
-    if location != "UNKNOWN" and incident_type:
+    # Check if location and incident types are valid
+    if location != "UNKNOWN" and incident_types:
         # Get agency handle from mapping
-        agency_handle = agency_map.get(incident_type)
-        if agency_handle:
-            # Construct alert message
-            message = f"Alert! {incident_type} incident reported in {location}. @{agency_handle} please investigate."
+        agency_handles = [agency_map.get(incident_type) for incident_type in incident_types]
+        agency_handles = [handle for handle in agency_handles if handle]  # Remove None values
 
-            # Send tweet tagging the agency (within Twitter character limit)
-            api.update_status(status=message[:280])  # Adjust for character limit
+        if agency_handles:
+            # Construct alert messages
+            messages = [f"Alert! {incident_type} incident reported in {location}. {handle} please investigate."
+                        for incident_type, handle in zip(incident_types, agency_handles)]
 
+            # Send tweets tagging the agencies (within Twitter character limit)
+            for message in messages:
+                api.update_status(status=message[:280])  # Adjust for character limit
+
+#Find key from dictionary from value inside it
+def find_keys(dictionary, target_value):
+    keys = []
+    for key, value_list in dictionary.items():
+        if target_value in value_list:
+            keys.append(key)
+    return keys
 
 # Stream listener class
-class MyStreamListener(tweepy.StreamListener):
+class MyStreamListener(tweepy.Stream):
 
     def on_status(self, status):
         process_tweet(status)
 
-
 # Create stream listener and start streaming
-myListener = MyStreamListener()
-stream = tweepy.Stream(auth, myListener)
-stream.filter(track=incident_keywords)
+myListener = MyStreamListener(auth, process_tweet)
+myListener.filter(track=incident_keywords_map)
