@@ -1,10 +1,10 @@
 import tweepy
 
-api_key = "mwVc9zQGm4RVYXe2aqHVZ6iyT"
-api_secret = "gpDGqMZvPfO9u6qnlqgTDtHXVXv6qntvGNdSsS8ZqQmNEjm7gZ"
-bearer_token = r"AAAAAAAAAAAAAAAAAAAAAJO%2BtAEAAAAAZHPQ4Bv4uvmzG9sdkwMBWonjNDE%3D1bjeswKCRIC5QfiZqZKyYLookWRDpxtlKZfNXFQlB4BDG1ZVpp"
-access_token = "1324319741998104576-07IGlcSaDaWMIfqRhrSQzJMkU9ci9G"
-access_token_secret = "k6B5zc1MHAg60rHQbhx4yqF30IA0j5cGUOuMmDSkaIDN1"
+from keys import api_key 
+from keys import api_secret 
+from keys import bearer_token 
+from keys import access_token
+from keys import access_token_secret 
 
 # Connect Bot to Twitter API - With this tweepy is now fully set up
 client = tweepy.Client(bearer_token, api_key, api_secret, access_token, access_token_secret)
